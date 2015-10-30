@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+        <link rel="stylesheet" type="text/css" href="css/index.css" />
+        <script type="text/javascript" src="cordova-2.4.0.js"></script>
+        <script type="text/javascript" src="js/index.js"></script>
+        <script type="text/javascript" src="js/jquery-2.1.3.js"></script>        
+        <script src="js/jquery.mobile-1.4.5.min.js"></script>
+        <script src="js/jquerymobile-swipeupdown.js"></script>
+        <style>
+		.mycell{
+		  background:#E89C84;
+		  width:30px;
+		  height:30px;
+		  float:left;
+		}
+		.sel{
+		  background:#FFDE00;
+		}
+		.selA{
+		  background-image:url('img/apple.png');
+		  background-repeat:no-repeat;
+		}
+		</style>
+        <title>Hello World</title>
+    </head>
+    <body>
+        <div>
+         <center>
+ <div style="width:600px;height:50px;padding:0px;margin-top:150px;">
+ <font size="16">Total Food Eaten : <label id="food_eat" name="food_eat" value=""></label></font></div><br /><br />
+ <div id=div_main style="width:600px;height:600px;padding:0px;margin-top:0px;border:10px solid #003366;"><div><br>
+ </center> 
+ <script>
+ var speed=200;
+ var dir=1;
+ var snake=["3_10","2_10","1_10"];
+ var food=""; 
+ var tot_food = 0;
+ function myinit(){
+    dir=1;
+    snake=["3_10","2_10","1_10"];
+    food="";
+    $('#div_main').html("");
+    for (var r=0;r<20;r++){
+      for (var c=0;c<20;c++){
+	$('#div_main').append('<div class=mycell id=c_'+r+'_'+c+'></div>');
+      }
+    }
+      $('#c_1_10').addClass('sel');
+      $('#c_2_10').addClass('sel');
+      $('#c_3_10').addClass('sel');
+      generatefood();
+      setTimeout(function(){gameupdate()}, speed);
+ }
+ myinit();
+ function generatefood(){
+    var r1 = Math.floor(Math.random() * 19);
+    var c1 = Math.floor(Math.random() * 19);
+    $('#c_'+r1+'_'+c1).addClass('selA');
+    food=''+r1+'_'+c1;
+ } 
+ function gameupdate(){
+  var tail=snake.pop(); 
+  $('#c_'+tail).removeClass('sel');
+  var hh=snake[0];
+  var rc=hh.split("_");
+  var r=parseInt(rc[0]);
+  var c=parseInt(rc[1]);
+  switch(dir){
+    case 1: r=r+1; break; // Bottom
+    case 2: c=c-1; break; // Left
+    case 3: r=r-1; break; // Top
+    case 4: c=c+1; break;  // Right
+  }  
+  var nn=""+r+"_"+c;
+  
+  if (nn==food){
+	  if(tot_food ==5)
+		{
+		  alert("You Win , move to next level");
+		  window.location.href = "level2.html";
+		 }
+	  tot_food= tot_food+1;
+	  document.getElementById("food_eat").innerHTML = tot_food;
+	  snake.push(tail);
+      $('#c_'+tail).addClass('sel');
+      $('#c_'+food).removeClass('selA');
+      generatefood();
+  }
+  snake.unshift(nn);
+  $('#c_'+nn).hasClass('sel'); 
+  //condition to exist the Game !
+  if (c<0 || r<0 || c>19 || r>19 ||  $('#c_'+nn).hasClass('sel') ){
+    alert('You lost !'); 
+    tot_food=0;
+    myinit();
+    return;
+  }  
+  $('#c_'+nn).addClass('sel');       
+  setTimeout(function(){gameupdate()}, speed);
+ } 
+ /*$(document).keydown(function(e){
+ if (e.keyCode == 37) { 
+    dir=2;
+ }else if (e.keyCode == 38) { 
+    dir=3;
+ }else if (e.keyCode == 39) { 
+    dir=4;
+ }else if (e.keyCode == 40) { 
+    dir=1;
+ }
+});*/
+$(document).on("swipeleft",function(){
+dir=2;
+});
+$(document).on("swiperight",function(){
+dir=4;
+});
+$(document).on("swipeup",function(){
+dir=3;
+});
+$(document).on("swipedown",function(){
+dir=1;
+});
+</script> 
+            
+        </div>
+        <h1>Sumit Snake Game</h1> 
+        <script type="text/javascript">
+            app.initialize();
+        </script>
+ 
+    </body>
+</html>
